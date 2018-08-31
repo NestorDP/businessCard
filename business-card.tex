@@ -1,0 +1,145 @@
+% !TEX TS-program = xelatex
+\documentclass[10pt,oneside,final]{article}
+
+% Copyright 2017 Olivier Pieters 
+% This document is licenses under GPL-3.0. View license.txt file for a copy of the license file. The figures in the /figures folder are licensed under the same license.
+% Original GitHub repository: https://github.com/opieters/business-card
+
+
+% set all margins to 0 and set business card size
+\usepackage[paperwidth=50mm,paperheight=90mm,margin=0.0cm,noheadfoot,landscape]{geometry}
+\setlength{\baselineskip}{0cm}
+\setlength{\topskip}{0pt}
+
+\usepackage{parskip}         % remove paragraph indents
+\usepackage{fontspec}        % load external fonts
+\usepackage{tikz}            % drawing
+\usepackage{fontawesome}     % icon font
+\usepackage{xcolor}          % more color options
+\usepackage{graphics}        % load images
+\usepackage[nolinks]{qrcode} % create QR codes
+
+% load and configure tikz libraries
+%================================================================================
+\usetikzlibrary{matrix,calc,positioning}
+
+% load external font
+%================================================================================
+\setmainfont{Fira Sans}
+\setsansfont{Fira Sans}
+\setmonofont{Fira Mono}
+
+% define some lengths for internal spacing 
+%================================================================================
+\newlength{\seplinewidth}    \setlength{\seplinewidth}{2.5cm}
+\newlength{\seplineheight}   \setlength{\seplineheight}{1pt}
+\newlength{\seplinedistance} \setlength{\seplinedistance}{0.0cm}
+
+% color options 
+%===============================================================================
+\definecolor{seplinecolour}{HTML}{3CB371}  % green
+\definecolor{iconcolour}{HTML}{2f3142}     % dark
+\definecolor{textcolour}{HTML}{2f3142}     % dark
+\definecolor{jobtitlecolour}{HTML}{474a65} % light dark
+
+% define some lengths for internal spacing 
+%===============================================================================
+\newlength{\qrheight}  \setlength{\qrheight}{1in}
+\newlength{\edgemargin} \setlength{\edgemargin}{1in}
+\newlength{\logowidth}  \setlength{\logowidth}{1.1in}
+
+% define colors 
+%===============================================================================
+\definecolor{bordercolour}{HTML}{357f2d} 	 % green
+\definecolor{backtextcolour}{HTML}{000000}   % black
+
+% change global color 
+%===============================================================================
+\makeatletter
+\newcommand{\globalcolor}[1]{%
+  \color{#1}\global\let\default@color\current@color
+}
+\makeatother
+\AtBeginDocument{\globalcolor{textcolour}}
+
+%%%%%%INÍCIO DO DOCUMENTO
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                                          %%
+%%                                     Página 1                                             %%
+%%                                                                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \thispagestyle{empty}
+  \vspace*{\fill}
+  \hspace{0.15in}
+    \begin{tikzpicture}
+      % name
+      %====================================================================================
+      \matrix[every node/.style={anchor=west,font=\LARGE},anchor=center] (name) {
+        \node{Nestor P. Neto}; \\ 
+        \node{\color{jobtitlecolour}\scriptsize\textit{\textsc{Eng. Eletricista-Eletrônica}}}; \\
+        \node{\color{jobtitlecolour}\tiny\textit{Crea-Ba 85964}}; \\
+      };
+      % sep line 1
+      %====================================================================================
+      \node[below=\seplinedistance of name] (hl1) {};
+      \draw[line width=\seplineheight,color=seplinecolour] (hl1)++(-\seplinewidth/2,0) -- ++(\seplinewidth,0);
+      % contact info
+      %====================================================================================
+      \matrix [below=\seplinedistance of hl1,%
+               column 1/.style={anchor=center,color=iconcolour,font=\scriptsize},%
+               column 2/.style={anchor=west,font=\scriptsize}] (contact){
+        %\node{\faGlobe}; & \node{nestorneto.eng.br};\\
+        \node{\faMousePointer}; & \node{nestorneto.eng.br};\\
+        \node{\faEnvelope}; &\node{nestor-dp@hotmail.com};\\
+        \node{\faPhone}; &\node{(71) 9 9698-6755}; \\
+      };
+      % qr code
+      %====================================================================================
+      \node[right=2.76cm of hl1](qr) {\qrcode[level=M,height=\qrheight]{BEGIN:VCARD
+        VERSION:3.0
+        N:Nestor D.;Pereira Neto;;M.Sc..
+        FN:Esp. Nestor D. Pereira Neto
+        TITLE:Eng. Eletricista-Eletrônica 
+        %ORG:Doe Enterprises
+        TEL;TYPE=MOBILE:+55 71 99698 6755
+        EMAIL:nestor-dp@hotmail.com
+        URL:http://www.nestorneto.eng.br
+        REV:2017-29-01T13:52:43Z
+        BDAY:19880310
+        %ADR;TYPE=WORK,PREF:;;2 Some Avenue;Anytown;SF;11111;USA
+        END:VCARD}};
+%     \node[below=-0.2cm of qr](latex){\color{jobtitlecolour}\tiny\textit{\LaTeX}};
+    \end{tikzpicture}
+  \vspace*{\fill}
+  \clearpage
+  \globalcolor{backtextcolour}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                                          %%
+%%                                     Página 2                                             %%
+%%                                                                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+  \begin{tikzpicture}[remember picture,overlay]
+  %     \draw[fill=bordercolour!30,draw=bordercolour] (current page.center) ++(-\paperwidth/2+\edgemargin,\paperheight/2-\edgemargin) rectangle ++(\paperwidth-2*\edgemargin,-\paperheight+2*\edgemargin);
+  % logo
+  %===================================================================================
+  \draw(current page.center) (0in,0.27in) node (helper logo) {};   
+  \node[anchor=center] at (helper logo) {\includegraphics[width=\logowidth, angle = 00]{figures/logoNN}};
+  % interests
+  %===================================================================================
+  \matrix [below=1.5cm of helper logo, every node/.style={anchor=center,font=\LARGE}](interests) 
+  {
+      \node(code){\faCode}; & 
+      \node(plug){\faPlug}; &
+      \node(cog){\faCog}; & 
+      \node(recycle){\faRecycle}; &
+      \node(wifi){\faWifi}; \\
+  }; 
+  \end{tikzpicture}
+\end{center} 
+\vspace*{\fill}
+  
+\end{document}
